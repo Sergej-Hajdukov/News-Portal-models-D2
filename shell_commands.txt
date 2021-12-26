@@ -1,0 +1,93 @@
+1.
+u1 = User.objects.create_user('Pavlik')
+u2 = User.objects.create_user('Antoha')
+
+2.
+Author.objects.create(user=u1)
+Author.objects.create(user=u2)
+
+3.
+Category.objects.create(topic_name='Политика')
+Category.objects.create(topic_name='Спорт')
+Category.objects.create(topic_name='Экономика')
+Category.objects.create(topic_name='Происшествия')
+
+4.
+Post.objects.create(author=Author.objects.get(pk=1), type='NE', title='Камила Валиева ушла в отрыв', post_text='Кульминацией чемпионата России по фигурному катани
+ю, проходившего в Санкт-Петербурге, стали женские соревнования. По их результатам на пьедестале оказались три ученицы Этери Тутберидзе: Камила Валиева, Александра Тру
+сова и Анна Щербакова. Они, скорее всего, войдут в состав отечественной команды на Олимпиаде, которая состоится в феврале в Пекине.')
+
+Post.objects.create(author=Author.objects.get(pk=2), type='AR', title='Сбербанк снизил первый взнос по ряду ипотечных программ', post_text='Сбербанк снизил первон
+ачальный взнос по некоторым ипотечным программам. Взнос снижен до 10% при оформлении ипотеки по двум документам (без подтверждения дохода). На этих условиях можно куп
+ить как готовое, так и строящееся жилье.')
+
+Post.objects.create(author=Author.objects.get(pk=1), type='AR', title='Как в Англии появился Boxing Day?', post_text='Boxing Day, или День подарков, который в Вел
+икобритании отмечают 26 декабря, стал не только культовым праздником, но и важнейшим днём для местных футбольных фанатов. Ежегодно на эту дату запланировано огромное
+число матчей по всей вертикали английского футбола. Для болельщиков это отличная возможность продолжить праздновать Рождество прямо на стадионе любимой команды, куда
+приходят целыми семьями.')
+
+5.
+p1 = Post.objects.get(pk=1)
+p1.categories.add(Category.objects.get(pk=2))
+p1.save()
+p1.categories.add(Category.objects.get(pk=1))
+p1.save()
+
+p2 = Post.objects.get(pk=2)
+p2.categories.add(Category.objects.get(pk=3))
+p2.save()
+p2.categories.add(Category.objects.get(pk=1))
+p2.save()
+
+p3 = Post.objects.get(pk=3)
+p3.categories.add(Category.objects.get(pk=2))
+p3.save()
+p3.categories.add(Category.objects.get(pk=3))
+p3.save()
+
+6.
+Comment.objects.create(post=p1, user=u1, comment_text='Как-то так...')
+Comment.objects.create(post=p1, user=u2, comment_text='Ну здорово же!!!')
+Comment.objects.create(post=p2, user=u2, comment_text='Как вам это?')
+Comment.objects.create(post=p2, user=u1, comment_text='Мне не интересно...')
+Comment.objects.create(post=p3, user=u1, comment_text='Крутая тема!')
+Comment.objects.create(post=p3, user=u2, comment_text='Обожаю АПЛ!')
+Comment.objects.create(post=p1, user=u1, comment_text='А я за Щербакову болел(')
+
+7.
+Post.objects.get(pk=1).like()
+Post.objects.get(pk=1).like()
+Post.objects.get(pk=1).like()
+
+Post.objects.get(pk=2).like()
+Post.objects.get(pk=2).dislike()
+Post.objects.get(pk=2).like()
+
+Post.objects.get(pk=3).like()
+Post.objects.get(pk=3).like()
+Post.objects.get(pk=3).like()
+Post.objects.get(pk=3).like()
+
+Comment.objects.get(pk=1).like()
+Comment.objects.get(pk=7).dislike()
+Comment.objects.get(pk=5).like()
+Comment.objects.get(pk=6).like()
+Comment.objects.get(pk=3).dislike()
+
+8.
+Author.objects.get(user=u1).update_rating()
+Author.objects.get(user=u2).update_rating()
+
+9.
+best_author = Author.objects.order_by('-user_rating')[:1]
+for i in best_author:
+	print(f'Лучший пользователь {i.user.username}, имеет рейтинг {i.user_rating}')
+
+10.
+best_article = Post.objects.order_by('-post_rating')[:1]
+for i in best_article:
+	print(f'Лучшая статья: "{i.title}"\nАвтор: {i.author.user.username}\nДобавлена: {i.release_date}\n"{i.preview()}"\nРейтинг: {i.post_rating}')
+
+11.
+for i in Comment.objects.filter(post=best_article):
+	print(f'Комментарий: "{i.comment_text}"\nДобавлен {i.create_date}\nпользователем {i.user.username}\nРейтинг: {i.comment_rating}')
