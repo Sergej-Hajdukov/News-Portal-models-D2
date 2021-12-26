@@ -1,1 +1,1 @@
-# News-Portal-models-D2
+Модели к проекту News Portal
